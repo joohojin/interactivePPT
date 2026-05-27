@@ -271,6 +271,12 @@ html:-webkit-full-screen .stage {
   background: rgba(255, 211, 107, 0.12);
 }
 
+.text-button[aria-pressed="true"] {
+  border-color: rgba(255, 211, 107, 0.64);
+  background: rgba(255, 211, 107, 0.18);
+  color: #ffe8a6;
+}
+
 .stage-wrap {
   display: grid;
   place-items: center;
@@ -1075,7 +1081,7 @@ html:-webkit-full-screen .stage {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 10.5cqh;
+  bottom: 16cqh;
   display: grid;
   gap: 1.1cqh;
   justify-items: center;
@@ -2911,6 +2917,160 @@ h2 {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
+}
+
+.app.is-performance-mode {
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+  --morph-fast: 320ms;
+  --morph-medium: 380ms;
+  --morph-slow: 460ms;
+}
+
+.app.is-performance-mode .thumb-rail,
+.app.is-performance-mode .topbar,
+.app.is-performance-mode .speaker-notes,
+.app.is-performance-mode .scene-copy,
+.app.is-performance-mode .effect-copy {
+  backdrop-filter: none;
+}
+
+.app.is-performance-mode .content-panel,
+.app.is-performance-mode .act-card,
+.app.is-performance-mode .scene-image img,
+.app.is-performance-mode .effect-scene,
+.app.is-performance-mode .qr-card {
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.3);
+}
+
+.app.is-performance-mode .slide.is-active,
+.app.is-performance-mode .slide.is-active .cover-title span,
+.app.is-performance-mode .slide.is-active .cover-copy p,
+.app.is-performance-mode .slide.is-active .credit-block,
+.app.is-performance-mode .slide.is-active .kicker,
+.app.is-performance-mode .slide.is-active .content-panel h1,
+.app.is-performance-mode .slide.is-active .overview-row,
+.app.is-performance-mode .slide.is-active .intent-grid section,
+.app.is-performance-mode .slide.is-active .intent-copy p,
+.app.is-performance-mode .slide.is-active .slide-header,
+.app.is-performance-mode .slide.is-active .cast-card,
+.app.is-performance-mode .slide.is-active .act-card,
+.app.is-performance-mode .slide.is-active .scene-image,
+.app.is-performance-mode .slide.is-active .scene-copy,
+.app.is-performance-mode .slide.is-active .scene-copy h1,
+.app.is-performance-mode .slide.is-active .script-lines p,
+.app.is-performance-mode .slide.is-active .direction-list span,
+.app.is-performance-mode .slide.is-active .effect-scene,
+.app.is-performance-mode .slide.is-active .effect-copy,
+.app.is-performance-mode .slide.is-active .effect-copy h2,
+.app.is-performance-mode .slide.is-active .effect-rows p,
+.app.is-performance-mode .slide.is-active .cue-card,
+.app.is-performance-mode .slide.is-active .qr-card {
+  will-change: auto;
+}
+
+.app.is-performance-mode .stage::before {
+  background:
+    radial-gradient(circle at var(--pointer-x) var(--pointer-y), rgba(255, 211, 107, 0.14), rgba(130, 216, 213, 0.05) 7cqw, transparent 15cqw);
+}
+
+.app.is-performance-mode .pointer-ripple {
+  animation-duration: 540ms;
+}
+
+.app.is-performance-mode .mist {
+  filter: blur(7px);
+  animation-duration: 10s;
+}
+
+.app.is-performance-mode .planning-page-light::before {
+  filter: blur(8px);
+  animation-duration: 20s, 6.2s;
+}
+
+.app.is-performance-mode .planning-page-light::after {
+  opacity: 0.32;
+  animation-duration: 8.5s;
+}
+
+.app.is-performance-mode .planning-page-fog {
+  height: 52%;
+  filter: blur(7px);
+}
+
+.app.is-performance-mode .planning-page-noise {
+  opacity: 0;
+}
+
+.app.is-performance-mode .planning-page-noise::before {
+  opacity: 0.6;
+}
+
+.app.is-performance-mode .planning-page-noise::after {
+  opacity: 0.34;
+}
+
+.app.is-performance-mode .slide-planning[data-effect="bamboo"] .planning-page-fog {
+  opacity: 0.78;
+  animation-duration: 12s, 8s;
+}
+
+.app.is-performance-mode .slide-planning[data-effect="bamboo"] .planning-page-light::before {
+  filter: blur(7px);
+  opacity: 0.66;
+  animation-duration: 12s, 6.2s;
+}
+
+.app.is-performance-mode .slide-planning[data-effect="bamboo"] .planning-page-light::after {
+  filter: none;
+  opacity: 0.58;
+  animation-duration: 13s, 8.5s;
+}
+
+.app.is-performance-mode .slide-planning[data-effect="glitch"] .planning-page-noise {
+  opacity: 0.58;
+  animation-duration: 0.72s, 2.1s;
+}
+
+.app.is-performance-mode .slide-planning[data-effect="glitch"] .planning-page-noise::before {
+  animation-duration: 1.35s;
+}
+
+.app.is-performance-mode .slide-planning[data-effect="glitch"] .planning-page-noise::after {
+  animation-duration: 2.4s;
+}
+
+.app.is-performance-mode .effect-light::before {
+  filter: blur(8px);
+  animation-duration: 16s, 5.5s;
+}
+
+.app.is-performance-mode .effect-light::after {
+  animation-duration: 7.2s;
+}
+
+.app.is-performance-mode .effect-fog {
+  filter: blur(8px);
+}
+
+.app.is-performance-mode .planning-stage[data-effect="bamboo"] .effect-fog {
+  opacity: 0.78;
+  filter: blur(9px);
+  animation-duration: 10s, 14s;
+}
+
+.app.is-performance-mode .planning-stage[data-effect="glitch"] .effect-light {
+  animation-duration: 0.95s;
+}
+
+.app.is-performance-mode .planning-stage[data-effect="glitch"] .effect-noise {
+  opacity: 0.44;
+  animation-duration: 0.74s;
+}
+
+.app.is-performance-mode .qr-spotlight {
+  box-shadow:
+    0 0 0 100vmax rgba(2, 8, 18, 0.42),
+    0 24px 70px rgba(0, 0, 0, 0.46);
 }
 
 @media (prefers-reduced-motion: reduce) {
