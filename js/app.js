@@ -42,7 +42,8 @@
     },
     glitch: {
       src: "Tension Flashback - Sound Effect (HD).mp3",
-      volume: 0.62,
+      volume: 0.92,
+      loop: true,
     },
     real: {
       src: "[뮤지컬 매디슨 카운티의 다리]어떤떨림 mr.mp3",
@@ -708,7 +709,7 @@
 
     const track = musicTracks[key];
     const audio = new Audio(music(track.src));
-    audio.loop = true;
+    audio.loop = track.loop !== false;
     audio.preload = "auto";
     audio.volume = track.volume;
     audioByKey.set(key, audio);
