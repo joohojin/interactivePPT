@@ -21,6 +21,12 @@
   let isMusicMuted = false;
   let currentMusicKey = null;
   let musicBlocked = false;
+  let pendingCastTilt = null;
+  let castTiltFrame = 0;
+  const castTiltState = new WeakMap();
+  let pendingSceneTilt = null;
+  let sceneTiltFrame = 0;
+  const sceneTiltState = new WeakMap();
   const useNativeViewTransitions = false;
 
   const image = (name) => `assets/img/${name}`;
@@ -337,8 +343,10 @@
           ${renderKicker(slide)}
           <h1>${escapeHtml(slide.title)}</h1>
           <div class="scene-copy-main">
-            <div class="script-lines">
-              ${slide.script.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+            <div class="script-lines" style="--line-cycle: ${slide.script.length * 3}s">
+              ${slide.script
+                .map((line, idx) => `<p style="--line-delay: ${idx * 3}s; --intro-delay: ${120 + idx * 60}ms">${escapeHtml(line)}</p>`)
+                .join("")}
             </div>
             ${
               slide.qr
@@ -379,8 +387,10 @@
         <section class="scene-copy">
           ${renderKicker(slide)}
           <h1>${escapeHtml(slide.title)}</h1>
-          <div class="script-lines">
-            ${slide.script.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+          <div class="script-lines" style="--line-cycle: ${slide.script.length * 3}s">
+            ${slide.script
+              .map((line, idx) => `<p style="--line-delay: ${idx * 3}s; --intro-delay: ${120 + idx * 60}ms">${escapeHtml(line)}</p>`)
+              .join("")}
           </div>
           <div class="logout-box" aria-live="polite">
             <span>로그아웃 하시겠습니까?</span>
@@ -615,18 +625,72 @@
     ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
   }
 
-  function updateCastTilt(card, event) {
-    const rect = card.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
+  function flushCastTilt() {
+    castTiltFrame = 0;
+    const next = pendingCastTilt;
+    pendingCastTilt = null;
+    if (!next?.card?.isConnected) return;
 
-    card.style.setProperty("--tilt-x", `${(-y * 7).toFixed(2)}deg`);
-    card.style.setProperty("--tilt-y", `${(x * 7).toFixed(2)}deg`);
+    const rect = next.card.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (next.clientX - rect.left) / rect.width)) - 0.5;
+    const y = Math.max(0, Math.min(1, (next.clientY - rect.top) / rect.height)) - 0.5;
+    const tiltX = Number((-y * 6.4).toFixed(2));
+    const tiltY = Number((x * 6.4).toFixed(2));
+    const prev = castTiltState.get(next.card);
+
+    if (prev && Math.abs(prev.x - tiltX) < 0.18 && Math.abs(prev.y - tiltY) < 0.18) return;
+
+    next.card.style.setProperty("--tilt-x", `${tiltX}deg`);
+    next.card.style.setProperty("--tilt-y", `${tiltY}deg`);
+    castTiltState.set(next.card, { x: tiltX, y: tiltY });
+  }
+
+  function updateCastTilt(card, event) {
+    pendingCastTilt = { card, clientX: event.clientX, clientY: event.clientY };
+    if (!castTiltFrame) {
+      castTiltFrame = window.requestAnimationFrame(flushCastTilt);
+    }
   }
 
   function resetCastTilt(card) {
+    if (pendingCastTilt?.card === card) pendingCastTilt = null;
     card.style.setProperty("--tilt-x", "0deg");
     card.style.setProperty("--tilt-y", "0deg");
+    castTiltState.set(card, { x: 0, y: 0 });
+  }
+
+  function flushSceneTilt() {
+    sceneTiltFrame = 0;
+    const next = pendingSceneTilt;
+    pendingSceneTilt = null;
+    if (!next?.scene?.isConnected) return;
+
+    const rect = next.scene.getBoundingClientRect();
+    const x = Math.max(0, Math.min(1, (next.clientX - rect.left) / rect.width)) - 0.5;
+    const y = Math.max(0, Math.min(1, (next.clientY - rect.top) / rect.height)) - 0.5;
+    const tiltX = Number((-y * 3.2).toFixed(2));
+    const tiltY = Number((x * 3.2).toFixed(2));
+    const prev = sceneTiltState.get(next.scene);
+
+    if (prev && Math.abs(prev.x - tiltX) < 0.12 && Math.abs(prev.y - tiltY) < 0.12) return;
+
+    next.scene.style.setProperty("--scene-tilt-x", `${tiltX}deg`);
+    next.scene.style.setProperty("--scene-tilt-y", `${tiltY}deg`);
+    sceneTiltState.set(next.scene, { x: tiltX, y: tiltY });
+  }
+
+  function updateSceneTilt(scene, event) {
+    pendingSceneTilt = { scene, clientX: event.clientX, clientY: event.clientY };
+    if (!sceneTiltFrame) {
+      sceneTiltFrame = window.requestAnimationFrame(flushSceneTilt);
+    }
+  }
+
+  function resetSceneTilt(scene) {
+    if (pendingSceneTilt?.scene === scene) pendingSceneTilt = null;
+    scene.style.setProperty("--scene-tilt-x", "0deg");
+    scene.style.setProperty("--scene-tilt-y", "0deg");
+    sceneTiltState.set(scene, { x: 0, y: 0 });
   }
 
   function audioForKey(key) {
@@ -822,6 +886,9 @@
 
       const castCard = event.target.closest(".cast-card");
       if (castCard) updateCastTilt(castCard, event);
+
+      const sceneImage = event.target.closest(".scene-image");
+      if (sceneImage) updateSceneTilt(sceneImage, event);
     });
     stage.addEventListener("pointerenter", (event) => {
       if (event.pointerType === "touch") return;
@@ -833,10 +900,16 @@
     stage.addEventListener("pointerout", (event) => {
       const castCard = event.target.closest(".cast-card");
       if (castCard && !castCard.contains(event.relatedTarget)) resetCastTilt(castCard);
+
+      const sceneImage = event.target.closest(".scene-image");
+      if (sceneImage && !sceneImage.contains(event.relatedTarget)) resetSceneTilt(sceneImage);
     });
     stage.addEventListener("focusout", (event) => {
       const castCard = event.target.closest(".cast-card");
       if (castCard) resetCastTilt(castCard);
+
+      const sceneImage = event.target.closest(".scene-image");
+      if (sceneImage) resetSceneTilt(sceneImage);
     });
     stage.addEventListener("pointerdown", (event) => {
       if (event.pointerType === "touch") return;
