@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>한여름밤의 조작된 사랑</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260527-39" />
+  </head>
+  <body>
+    <div class="app" data-nav-open="false">
+      <aside class="thumb-rail" aria-label="슬라이드 목차">
+        <div class="rail-title">SCENES</div>
+        <div id="thumbs" class="thumbs"></div>
+      </aside>
+
+      <main class="deck-shell">
+        <div class="topbar">
+          <button class="icon-button" id="toggleNav" type="button" aria-label="목차 열기">☰</button>
+          <div class="deck-title">한여름밤의 조작된 사랑</div>
+          <div class="topbar-spacer"></div>
+          <button class="text-button" id="toggleNotes" type="button">노트</button>
+          <button class="text-button" id="pointerBtn" type="button" aria-pressed="false">포인터</button>
+          <button class="text-button" id="muteBtn" type="button" aria-pressed="false">음소거</button>
+          <button class="text-button" id="fullscreenBtn" type="button">전체화면</button>
+        </div>
+
+        <section class="stage-wrap" aria-live="polite">
+          <div id="stage" class="stage"></div>
+        </section>
+
+        <div class="controls" aria-label="발표 조작">
+          <button class="icon-button" id="prevBtn" type="button" aria-label="이전 슬라이드">‹</button>
+          <div class="counter"><span id="currentSlide">1</span><span>/</span><span id="totalSlides">11</span></div>
+          <button class="icon-button" id="nextBtn" type="button" aria-label="다음 슬라이드">›</button>
+        </div>
+
+        <div class="progress-track" aria-hidden="true">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <aside class="speaker-notes" id="speakerNotes" aria-label="발표 노트">
+          <div class="notes-kicker">PRESENTER NOTE</div>
+          <div id="notesText"></div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="js/slides.js?v=20260527-39"></script>
+    <script src="js/app.js?v=20260527-39"></script>
+  </body>
+</html>
