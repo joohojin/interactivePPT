@@ -40,6 +40,10 @@
       src: "[MR  원키] For good 너로 인하여 (뮤지컬 Wicked ) Inst, MR   한글가사.mp3",
       volume: 0.52,
     },
+    glitch: {
+      src: "Tension Flashback - Sound Effect (HD).mp3",
+      volume: 0.62,
+    },
     real: {
       src: "[뮤지컬 매디슨 카운티의 다리]어떤떨림 mr.mp3",
       volume: 0.48,
@@ -350,7 +354,7 @@
             </div>
             ${
               slide.qr
-                ? `<aside class="qr-card"><img src="${image(slide.qr)}" alt="대나무숲 QR 코드" /><span>대나무숲 입장 QR</span></aside>`
+                ? `<aside class="qr-card" tabindex="0" aria-label="대나무숲 입장 QR 크게 보기"><img src="${image(slide.qr)}" alt="대나무숲 QR 코드" /><span>대나무숲 입장 QR</span></aside>`
                 : ""
             }
           </div>
@@ -359,6 +363,11 @@
           </div>
         </section>
       </div>
+      ${
+        slide.qr
+          ? `<div class="qr-spotlight" aria-hidden="true"><img src="${image(slide.qr)}" alt="" /><span>대나무숲 입장 QR</span></div>`
+          : ""
+      }
     `;
   }
 
